@@ -5,6 +5,7 @@ int digWArr[] = { 39 };// , 40 , 41 , 42 , 43 , 44 , 45 , 46 , 47 };
 int anaWArr[] = { 9 }; // , 10 , 0 , 0 , 0 , 0 , 0 , 0 };
 int neutralPoint[] = { 447 };//, 447 , 447 , 447 , 447 , 447 , 447 , 447 };
 
+
 int recallButton = 8;
 int offButton = 7;
 
@@ -43,6 +44,9 @@ void loop() {
     int input = analogRead(sensorPin[i]);
     int moveVal = input - neutralPoint[i];
     int output = map(abs(moveVal), 0, 1023, 190, 255);
+	int minSpeed = 255;
+	int maxSpeed = 0;
+
 
     if (moveVal < 0) {
       dir = LOW;
@@ -53,14 +57,21 @@ void loop() {
     digitalWrite(digWArr[i], dir);
     analogWrite(anaWArr[i], output);
 
-    if (moveVal != 0) {
-      Serial.print("Actuator: ");
-      Serial.print(anaWArr[i], DEC);
-      Serial.print(" | ");
-      Serial.print(moveVal, DEC);
-      Serial.print(" | ");
-      Serial.println(output, DEC);
+    if (output < minSpeed) {
+		minSpeed = output;
     }
+	if(output > maxSpeed){
+		maxSpeed = output;
+	}
+	Serial.print("Actuator: ");
+    Serial.print(anaWArr[i], DEC);
+    Serial.print(" | ");
+    Serial.print(moveVal, DEC);
+	Serial.print("| Max Value: ");
+	Serial.print(maxSpeed, Dec);
+    Serial.print(" | Min Value: ");
+    Serial.println(minSpeed, DEC);
+	
   }
 }
 
