@@ -11,6 +11,10 @@ int offButton = 7;
 
 int dir;
 
+int minSpeed = 255;
+int maxSpeed = 0;
+int maxRange = 0;
+
 void setup() {
   Serial.begin(9600);
 
@@ -44,9 +48,6 @@ void loop() {
     int input = analogRead(sensorPin[i]);
     int moveVal = input - neutralPoint[i];
     int output = map(abs(moveVal), 0, 1023, 190, 255);
-	int minSpeed = 255;
-	int maxSpeed = 0;
-
 
     if (moveVal < 0) {
       dir = LOW;
@@ -57,21 +58,27 @@ void loop() {
     digitalWrite(digWArr[i], dir);
     analogWrite(anaWArr[i], output);
 
-    if (output < minSpeed) {
+    if(output < minSpeed){
 		minSpeed = output;
     }
 	if(output > maxSpeed){
 		maxSpeed = output;
 	}
+    if(maxRange > (maxSpeed - minSpeed)){
+        maxRange = (maxSpeed - minSpeed);
+    }
+
 	Serial.print("Actuator: ");
     Serial.print(anaWArr[i], DEC);
     Serial.print(" | ");
     Serial.print(moveVal, DEC);
-	Serial.print("| Max Value: ");
+	Serial.print(" | Max Speed: ");
 	Serial.print(maxSpeed, Dec);
-    Serial.print(" | Min Value: ");
+    Serial.print(" | Min Speed: ");
     Serial.println(minSpeed, DEC);
-	
+    Serial.print(" | Max Range: ");
+    Serial.println(maxRange, DEC);
+
   }
 }
 
